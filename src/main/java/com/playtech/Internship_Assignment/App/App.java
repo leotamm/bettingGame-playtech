@@ -15,15 +15,17 @@ public class App
 		System.out.println( "Program started..." );
 
 		readInputData();
+		
+		System.out.println( "Program executed" );
 	}
 
 	public static void readInputData () {
 
-		String playerDataFile = "resources/player_data.txt";
+		String playerDataFilePath = "resources/player_data.txt";
 
 		System.out.println("Reading player data...");
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(playerDataFile))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(playerDataFilePath))) {
 			String line;
 			// Read each line from the file until the end is reached
 			while ((line = reader.readLine()) != null) {
@@ -34,11 +36,11 @@ public class App
 			e.printStackTrace();
 		}
 		
-		String matchDataFile = "resources/player_data.txt";
+		String matchDataFilePath = "resources/player_data.txt";
 
 		System.out.println("Reading match data...");
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(matchDataFile))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(matchDataFilePath))) {
 			String line;
 			// Read each line from the file until the end is reached
 			while ((line = reader.readLine()) != null) {
