@@ -8,32 +8,23 @@ import java.util.HashMap;
 public class AppService {
 
 	public static HashMap<String, PlayerData> readPlayerData () {
-
 		String playerDataFilePath = "resources/player_data.txt";
 		HashMap<String, PlayerData> fullSessionPlayerData = new HashMap<String, PlayerData>();
-
 		try (BufferedReader reader = new BufferedReader(new FileReader(playerDataFilePath))) {
 			String line;
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] segments = line.split(",");
-				//System.out.print("Line " + i + " ja segmente: " + segments.length + " ");
 				PlayerData tempPlayerData = new PlayerData();
 				tempPlayerData.setUserId(segments[0]);
-				//System.out.print("1:" + segments[0] + " ");
 				tempPlayerData.setOperation(segments[1]);
-				//System.out.print("2:" + segments[1] + " ");
 				tempPlayerData.setMatchId(segments[2]);
-				//System.out.print("3:" + segments[2] + " ");
 				tempPlayerData.setCoinNumber(Integer.valueOf(segments[3]));
-				//System.out.print("4:" + segments[3] + " ");
 				if(segments.length == 5) {
 					tempPlayerData.setBet(segments[4]);
-					//System.out.print("5:" + segments[4] + " ");
 				}
-				fullSessionPlayerData.put("line " + i, tempPlayerData);
+				fullSessionPlayerData.put("line" + i, tempPlayerData);
 				i++;
-				//System.out.println();
 			}		
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -41,22 +32,26 @@ public class AppService {
 		return fullSessionPlayerData;
 	}
 
-
-	public static void readMatchData () {
-
+	public static HashMap<String, MatchData> readMatchData () {
 		String matchDataFilePath = "resources/match_data.txt";
-
-		System.out.println("Reading match data...");
-
+		HashMap<String, MatchData> fullSessionMatchData = new HashMap<String, MatchData>();
 		try (BufferedReader reader = new BufferedReader(new FileReader(matchDataFilePath))) {
 			String line;
+			int i = 0;
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
+				String[] segments = line.split(",");
+				MatchData tempMatchData = new MatchData();
+				tempMatchData.setMatchId(segments[0]);
+				tempMatchData.setReturnRateA(Float.parseFloat(segments[1]));
+				tempMatchData.setReturnRateB(Float.parseFloat(segments[2]));
+				tempMatchData.setResult(segments[3]);
+				fullSessionMatchData.put("line" + i, tempMatchData);
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return fullSessionMatchData;
 	}
 
 }

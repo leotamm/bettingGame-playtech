@@ -13,24 +13,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-public class App 
-{
-	public static void main( String[] args )
-	{
+public class App {
+	
+	public static void main( String[] args ) {
+
 		HashMap<String, PlayerData> sessionPlayerData = new HashMap<String, PlayerData>();
 		sessionPlayerData = AppService.readPlayerData();
+
+		System.out.println("Mängijate failis loetud ridu: " + sessionPlayerData.size());
+
+		sessionPlayerData.forEach((key, value) -> System.out.println(key + " " + value.getUserId()));
+
+		HashMap<String, MatchData> sessionMatchData = new HashMap<String, MatchData>();
+		sessionMatchData = AppService.readMatchData();
 		
-		System.out.println("Leotud ridu: " + sessionPlayerData.size());
+		System.out.println("Mängude failis loetud ridu: " + sessionMatchData.size());
 		
-		//sessionPlayerData.forEach((key, value) -> System.out.println(value.getUserId()));
+		sessionMatchData.forEach((key, value) -> System.out.println(key + " " + value.getMatchId()));
 		
-		//AppService.readMatchData();
 		//writeToFile();
 
 	}
 
-	
-	
+
+
 
 	public static void writeToFile () {
 
