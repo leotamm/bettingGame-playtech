@@ -5,12 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class AppService {
+public class DataHandler {
 
-	public static HashMap<String, PlayerData> readPlayerData () {
-		String playerDataFilePath = "resources/player_data.txt";
-		HashMap<String, PlayerData> fullSessionPlayerData = new HashMap<String, PlayerData>();
-		try (BufferedReader reader = new BufferedReader(new FileReader(playerDataFilePath))) {
+	public static HashMap<Integer, PlayerData> readPlayerData () {
+		HashMap<Integer, PlayerData> fullSessionPlayerData = new HashMap<Integer, PlayerData>();
+		try (BufferedReader reader = new BufferedReader(new FileReader("resources/player_data.txt"))) {
 			String line;
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
@@ -19,11 +18,11 @@ public class AppService {
 				tempPlayerData.setUserId(segments[0]);
 				tempPlayerData.setOperation(segments[1]);
 				tempPlayerData.setMatchId(segments[2]);
-				tempPlayerData.setCoinNumber(Integer.valueOf(segments[3]));
+				tempPlayerData.setCoinNumber(Integer.parseInt(segments[3]));
 				if(segments.length == 5) {
 					tempPlayerData.setBet(segments[4]);
 				}
-				fullSessionPlayerData.put("line" + i, tempPlayerData);
+				fullSessionPlayerData.put(i, tempPlayerData);
 				i++;
 			}		
 		} catch (IOException e) {
@@ -32,10 +31,9 @@ public class AppService {
 		return fullSessionPlayerData;
 	}
 
-	public static HashMap<String, MatchData> readMatchData () {
-		String matchDataFilePath = "resources/match_data.txt";
-		HashMap<String, MatchData> fullSessionMatchData = new HashMap<String, MatchData>();
-		try (BufferedReader reader = new BufferedReader(new FileReader(matchDataFilePath))) {
+	public static HashMap<Integer, MatchData> readMatchData () {
+		HashMap<Integer, MatchData> fullSessionMatchData = new HashMap<Integer, MatchData>();
+		try (BufferedReader reader = new BufferedReader(new FileReader("resources/match_data.txt"))) {
 			String line;
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
@@ -45,7 +43,7 @@ public class AppService {
 				tempMatchData.setReturnRateA(Float.parseFloat(segments[1]));
 				tempMatchData.setReturnRateB(Float.parseFloat(segments[2]));
 				tempMatchData.setResult(segments[3]);
-				fullSessionMatchData.put("line" + i, tempMatchData);
+				fullSessionMatchData.put(i, tempMatchData);
 				i++;
 			}
 		} catch (IOException e) {

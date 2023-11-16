@@ -1,6 +1,6 @@
 package com.playtech.Internship_Assignment.App;
 
-import com.playtech.Internship_Assignment.App.AppService;
+import com.playtech.Internship_Assignment.App.DataHandler;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,22 +16,27 @@ import java.util.HashMap;
 public class App {
 	
 	public static void main( String[] args ) {
+		
+		System.out.println("Program started...");
 
-		HashMap<String, PlayerData> sessionPlayerData = new HashMap<String, PlayerData>();
-		sessionPlayerData = AppService.readPlayerData();
+		HashMap<Integer, PlayerData> sessionPlayerData = new HashMap<Integer, PlayerData>();
+		sessionPlayerData = DataHandler.readPlayerData();
 
 		System.out.println("Mängijate failis loetud ridu: " + sessionPlayerData.size());
-
 		sessionPlayerData.forEach((key, value) -> System.out.println(key + " " + value.getUserId()));
 
-		HashMap<String, MatchData> sessionMatchData = new HashMap<String, MatchData>();
-		sessionMatchData = AppService.readMatchData();
+		HashMap<Integer, MatchData> sessionMatchData = new HashMap<Integer, MatchData>();
+		sessionMatchData = DataHandler.readMatchData();
 		
 		System.out.println("Mängude failis loetud ridu: " + sessionMatchData.size());
-		
 		sessionMatchData.forEach((key, value) -> System.out.println(key + " " + value.getMatchId()));
 		
+		GameHandler.letsPlay(sessionPlayerData, sessionMatchData);
+		
+		
 		//writeToFile();
+
+		System.out.println("Program executed");
 
 	}
 
