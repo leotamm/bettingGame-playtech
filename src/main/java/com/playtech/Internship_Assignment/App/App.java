@@ -1,7 +1,5 @@
 package com.playtech.Internship_Assignment.App;
 
-import com.playtech.Internship_Assignment.App.DataHandler;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedWriter;
@@ -19,29 +17,25 @@ public class App {
 		
 		System.out.println("Program started...");
 
+		HashMap<Integer, MatchData> sessionMatchData = new HashMap<Integer, MatchData>();
+		sessionMatchData = DataHandler.readMatchData();
+
 		HashMap<Integer, PlayerData> sessionPlayerData = new HashMap<Integer, PlayerData>();
 		sessionPlayerData = DataHandler.readPlayerData();
 
-		System.out.println("Mängijate failis loetud ridu: " + sessionPlayerData.size());
-		sessionPlayerData.forEach((key, value) -> System.out.println(key + " " + value.getUserId()));
-
-		HashMap<Integer, MatchData> sessionMatchData = new HashMap<Integer, MatchData>();
-		sessionMatchData = DataHandler.readMatchData();
-		
-		System.out.println("Mängude failis loetud ridu: " + sessionMatchData.size());
-		sessionMatchData.forEach((key, value) -> System.out.println(key + " " + value.getMatchId()));
-		
-		GameHandler.letsPlay(sessionPlayerData, sessionMatchData);
-		
+//		System.out.println("Mängijate failis loetud ridu: " + sessionPlayerData.size());
+//		sessionPlayerData.forEach((key, value) -> System.out.println(key + " " + value.getUserId()));
+//
+//		System.out.println("Mängude failis loetud ridu: " + sessionMatchData.size());
+//		sessionMatchData.forEach((key, value) -> System.out.println(key + " " + value.getMatchId()));
+//		
+		GameHandler.letsPlay(sessionMatchData, sessionPlayerData);
 		
 		//writeToFile();
 
 		System.out.println("Program executed");
 
 	}
-
-
-
 
 	public static void writeToFile () {
 
