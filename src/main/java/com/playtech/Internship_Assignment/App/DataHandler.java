@@ -11,6 +11,7 @@ public class DataHandler {
 		HashMap<Integer, PlayerData> fullSessionPlayerData = new HashMap<Integer, PlayerData>();
 		try (BufferedReader reader = new BufferedReader(new FileReader("resources/player_data.txt"))) {
 			String line;
+			String tempPlayerId = "";
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] segments = line.split(",");
@@ -21,6 +22,9 @@ public class DataHandler {
 				tempPlayerData.setCoinNumber(Integer.parseInt(segments[3]));
 				if(segments.length == 5) {
 					tempPlayerData.setBet(segments[4]);
+				}
+				if(!segments[0].equals(tempPlayerId)) {
+					tempPlayerId = segments[0];
 				}
 				fullSessionPlayerData.put(i, tempPlayerData);
 				i++;

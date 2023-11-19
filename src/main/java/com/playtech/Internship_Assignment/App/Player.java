@@ -7,6 +7,7 @@ public class Player {
 	//class for handling player data in game session
 	private String playerID;
 	private boolean playerIsLegitimate;
+	private String illegalMoveLog;
 	private long playerBalance;
 	private int wonGames;
 	private int placedBets;
@@ -23,6 +24,12 @@ public class Player {
 	}
 	public void setPlayerIsLegitimate(boolean playerIsLegitimate) {
 		this.playerIsLegitimate = playerIsLegitimate;
+	}
+	public String getIllegalMoveLog() {
+		return illegalMoveLog;
+	}
+	public void setIllegalMoveLog(String illegalMoveLog) {
+		this.illegalMoveLog = illegalMoveLog;
 	}
 	public long getPlayerBalance() {
 		return playerBalance;
@@ -49,10 +56,12 @@ public class Player {
 		this.playerWinRate = playerWinRate;
 	}
 
+	
 	public static Player initiateNewPlayer() {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerID("no user id");
 		newPlayer.setPlayerIsLegitimate(true);
+		newPlayer.setIllegalMoveLog("");
 		newPlayer.setPlayerBalance(0);
 		newPlayer.setWonGames(0);
 		newPlayer.setPlacedBets(0);

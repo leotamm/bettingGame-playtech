@@ -1,29 +1,44 @@
 package com.playtech.Internship_Assignment.App;
 
 import java.util.HashMap;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class GameHandler {
 
 	public static void letsPlay (HashMap<Integer, MatchData> incomingMatchData, HashMap<Integer, PlayerData> incomingPlayerData) {
 
-		// tsükkel loeb andmed õiges järjekorras sisse: for(MatchData i : matchData.values())
+		// get match and game data log
 		HashMap<Integer, MatchData> matchData = new HashMap<Integer, MatchData>();
 		matchData = incomingMatchData;
-
 		HashMap<Integer, PlayerData> playerData = new HashMap<Integer, PlayerData>();
 		playerData = incomingPlayerData;
 
+		// calculate user count and get the unique id-s from player data object
+		int playerCounter = 0;
+		ArrayList<String> playerIdList = new ArrayList<String>();
+		String previousId = "";
+		for(Integer i : playerData.keySet()) {
+			PlayerData thisPlayer = playerData.get(i);
+			String thisUserId = thisPlayer.getUserId();
+			if(!previousId.equals(thisUserId)) {
+				playerCounter++;
+				playerIdList.add(thisUserId);
+				previousId = thisUserId;
+			}
+		}
+
+		// initiate casino balance
 		long casinoBalance = 0;
-		ArrayList<Player> sessionPlayers = new ArrayList<Player>();
-		Player singleEmptyPlayer = Player.initiateNewPlayer();
-		sessionPlayers.add(singleEmptyPlayer);
 
-		System.out.println("Start array length:" + sessionPlayers.size());
+		// create player map populate it once a player id changes or at the last loop iteration
+		HashMap<Integer, Player> sessionPlayers = new HashMap<Integer, Player>();
 
-		String previousUser = "";
+		int playerCounterForMapKey = 0;
+		String previousUserId = playerIdList.get(playerCounterForMapKey);
+		Player currentPlayer = new Player();
+		currentPlayer = Player.initiateNewPlayer();
 
+		int loopCounter = 0;
 		for(PlayerData i : playerData.values()) {
 
 			String thePlayerIdFromData = i.getUserId();
@@ -32,57 +47,135 @@ public class GameHandler {
 			int theCoinNumberFromData = i.getCoinNumber();
 			String theBetFromData = i.getBet();
 
-			Player storedPlayer = sessionPlayers.get(sessionPlayers.size()-1);
-			String storedPlayerId = storedPlayer.getPlayerID();
-			System.out.println("Fetched id: " + previousUser + " and action " + theOperationFromData + 
+			System.out.println("Log: " + thePlayerIdFromData + " and action " + theOperationFromData + 
 					" " + theCoinNumberFromData + " coins");
 
-			Player currentUser = Player.initiateNewPlayer();
-			currentUser.setPlayerID(thePlayerIdFromData);
-			
-			// check if new player in player data log
-			// assume and handle only DEPOSIT
-			if(!previousUser.equals(thePlayerIdFromData)){
+			if(thePlayerIdFromData.equals(previousUserId)) {
 
+				// ACTIONS
 				if(theOperationFromData.equals("DEPOSIT")) {
-					currentUser.setPlayerBalance(currentUser.getPlayerBalance()+theCoinNumberFromData);
-					System.out.println("New player " + thePlayerIdFromData + " and new balance " + currentUser.getPlayerBalance());				
+					currentPlayer.setPlayerBalance(currentPlayer.getPlayerBalance()+theCoinNumberFromData);
+					System.out.println("Action: Deposit for " + thePlayerIdFromData + " and the new balance " + 
+							currentPlayer.getPlayerBalance());				
 				}
-				sessionPlayers.add(currentUser);				
-
-				//			System.out.println("User: " + thePlayerId + " Operation: " + theOperation + 
-				//					" Match: " + theMatchId + " Coins: " + theCoinNumber + " Bet: " + theBet + " counter:" +playerCounter);
-			
-			}
-			
-			// handle same player other actions after DEPOSIT
-			if(previousUser.equals(thePlayerIdFromData)) {
 				
-				if(theOperationFromData.equals("DEPOSIT")) {
-					int initialBalance = (int) currentUser.getPlayerBalance();
-					long newBalance = initialBalance + theCoinNumberFromData;
-					currentUser.setPlayerBalance(newBalance);
-					System.out.println("Same player, initial balance " + initialBalance + " new DEPOSIT " + theCoinNumberFromData + " new BALANCE" + currentUser.getPlayerBalance());
+				if(theOperationFromData.equals("BET")) {
+					String currentMacthId = "";
+					String currentResult = "";
+					float currentRateA = 0L;
+					float currentRateB = 0L;
+					float win = 0L;
+					for(MatchData j : matchData.values()) {
+						String theMatchId = j.getMatchId();
+						if(theMatchIdFromData.equals(theMatchId)) {
+							currentMacthId = j.getMatchId();
+							currentRateA = j.getReturnRateA();
+							currentRateB = j.getReturnRateB();
+							currentResult = j.getResult();
+						}
+					}
+					// check if legal move
+					if(theCoinNumberFromData <= currentPlayer.getPlayerBalance()) {
+
+						// handle winning condition
+						if(theBetFromData.equals(currentResult)) {
+							if (currentResult.equals("A")) {
+								win = theCoinNumberFromData * currentRateA;
+								System.out.println("WIN: " + win);
+								int newBalance = (int) (currentPlayer.getPlayerBalance()+win);
+								currentPlayer.setPlayerBalance(newBalance);
+								currentPlayer.setWonGames(currentPlayer.getWonGames()+1);
+							}
+							if(currentResult.equals("B")) {
+								win = theCoinNumberFromData * currentRateB;
+								System.out.println("WIN: " + win);
+								int newBalance = (int) (currentPlayer.getPlayerBalance()+win);
+								currentPlayer.setPlayerBalance(newBalance);
+								currentPlayer.setWonGames(currentPlayer.getWonGames()+1);
+							}
+						} 
+						// handle loosing condition
+						else {
+							System.out.println("LOOSE: " + theCoinNumberFromData);
+							currentPlayer.setPlayerBalance(currentPlayer.getPlayerBalance()-theCoinNumberFromData);
+							casinoBalance += theCoinNumberFromData;
+							System.out.println("Casino balance: " + casinoBalance);
+						}
+						currentPlayer.setPlacedBets(currentPlayer.getPlacedBets()+1);
+
+					} else {
+						currentPlayer.setPlayerIsLegitimate(false);
+						if(currentPlayer.getIllegalMoveLog().length() == 0) {				// TODO - get the right values in!
+							String log = currentPlayer.getPlayerID() + " " + theOperationFromData + " " + currentMacthId + 
+									" " +  theCoinNumberFromData + " " + currentResult;
+							currentPlayer.setIllegalMoveLog(log);
+						}
+						System.out.println("Illegal action - too large bet");
+					}
+
 				}
-				System.out.println("Same player, different action");
+
+				if(theOperationFromData.equals("WITHDRAW")) {
+					// check if legal move
+					if(currentPlayer.getPlayerBalance() - theCoinNumberFromData > 0) {
+						currentPlayer.setPlayerBalance(currentPlayer.getPlayerBalance()-theCoinNumberFromData);
+						System.out.println("Action: Withdrawal for " + thePlayerIdFromData + " and the new balance " + 
+								currentPlayer.getPlayerBalance());
+					} else {
+						currentPlayer.setPlayerIsLegitimate(false);
+						if(currentPlayer.getIllegalMoveLog().length() == 0) {
+							String log = currentPlayer.getPlayerID() + " " + theOperationFromData + " null " + " " +  
+									theCoinNumberFromData + " null ";
+							currentPlayer.setIllegalMoveLog(log);
+						}
+						System.out.println("Illegal action - too large withdrawal");
+					}
+				}
+				if(loopCounter == playerData.size()-1) {
+					sessionPlayers.put(playerCounterForMapKey, currentPlayer);
+				}
+				System.out.println("Info: Player balance is now " + currentPlayer.getPlayerBalance());
+
+			} else {
+				// SAVE and change current player
+				sessionPlayers.put(playerCounterForMapKey, currentPlayer);
+				playerCounterForMapKey++;
+				previousUserId = playerIdList.get(playerCounterForMapKey);
+				currentPlayer = new Player();
+				currentPlayer = Player.initiateNewPlayer();
+
+				if(theOperationFromData.equals("DEPOSIT")) {
+					currentPlayer.setPlayerBalance(currentPlayer.getPlayerBalance()+theCoinNumberFromData);
+					System.out.println("Action: Deposit for " + thePlayerIdFromData + " and the new balance " + 
+							currentPlayer.getPlayerBalance());				
+				}
+				
+				
+				
+				
+				if(theOperationFromData.equals("WITHDRAW")) {
+					if(currentPlayer.getPlayerBalance() - theCoinNumberFromData > 0) {
+						currentPlayer.setPlayerBalance(currentPlayer.getPlayerBalance()-theCoinNumberFromData);
+						System.out.println("Action: Withdrawal for " + thePlayerIdFromData + " and the new balance " + 
+								currentPlayer.getPlayerBalance());
+					} else {
+						currentPlayer.setPlayerIsLegitimate(false);
+						if(currentPlayer.getIllegalMoveLog().length() == 0) {
+							String log = currentPlayer.getPlayerID() + " " + theOperationFromData + " null " +  
+									theCoinNumberFromData + " null";
+							currentPlayer.setIllegalMoveLog(log);
+						}
+						System.out.println("Illegal action - too large withdrawal");
+					}
+				}
+				System.out.println("Info: Player balance is now " + currentPlayer.getPlayerBalance());
+
 			}
-			
-			
-			previousUser = thePlayerIdFromData;
-			
-		}
+			loopCounter++;
 
-
-		System.out.println("End array length:" + sessionPlayers.size());
-		
-		for(int i = 1; i < sessionPlayers.size(); i++) {
-			Player player = sessionPlayers.get(i);
-			long balance = player.getPlayerBalance();
-			System.out.println("Balance: " + balance);
 		}
-		
-		System.out.println("Gamehandler closed");
 
 	}
 
 }
+
