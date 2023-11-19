@@ -76,7 +76,6 @@ public class GameHandler {
 					}
 					// check if legal move
 					if(theCoinNumberFromData <= currentPlayer.getPlayerBalance()) {
-
 						// handle winning condition
 						if(theBetFromData.equals(currentResult)) {
 							if (currentResult.equals("A")) {
@@ -149,9 +148,6 @@ public class GameHandler {
 					System.out.println("Action: Deposit for " + thePlayerIdFromData + " and the new balance " + 
 							currentPlayer.getPlayerBalance());				
 				}
-				
-				
-				
 				
 				if(theOperationFromData.equals("WITHDRAW")) {
 					if(currentPlayer.getPlayerBalance() - theCoinNumberFromData > 0) {
