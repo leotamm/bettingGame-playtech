@@ -7,7 +7,7 @@ public class Player {
 	//class for handling player data in game session
 	private String playerID;
 	private boolean playerIsLegitimate;
-	private int playerBalance;
+	private long playerBalance;
 	private int wonGames;
 	private int placedBets;
 	private BigDecimal playerWinRate;
@@ -24,9 +24,12 @@ public class Player {
 	public void setPlayerIsLegitimate(boolean playerIsLegitimate) {
 		this.playerIsLegitimate = playerIsLegitimate;
 	}
-	public int getPlayerBalance() {
+	public long getPlayerBalance() {
 		return playerBalance;
 	}	
+	public void setPlayerBalance(long playerBalance) {
+		this.playerBalance = playerBalance;
+	}
 	public int getWonGames() {
 		return wonGames;
 	}
@@ -39,14 +42,23 @@ public class Player {
 	public void setPlacedBets(int placedBets) {
 		this.placedBets = placedBets;
 	}
-	public void setPlayerBalance(int playerBalance) {
-		this.playerBalance = playerBalance;
-	}
 	public BigDecimal getPlayerWinRate() {
 		return playerWinRate;
 	}
 	public void setPlayerWinRate(BigDecimal playerWinRate) {
 		this.playerWinRate = playerWinRate;
+	}
+
+	public static Player initiateNewPlayer() {
+		Player newPlayer = new Player();
+		newPlayer.setPlayerID("no user id");
+		newPlayer.setPlayerIsLegitimate(true);
+		newPlayer.setPlayerBalance(0);
+		newPlayer.setWonGames(0);
+		newPlayer.setPlacedBets(0);
+		BigDecimal bd = BigDecimal.ZERO;
+		newPlayer.setPlayerWinRate(bd);
+		return newPlayer;
 	}
 
 }

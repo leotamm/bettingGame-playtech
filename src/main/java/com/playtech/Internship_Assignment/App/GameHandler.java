@@ -8,57 +8,80 @@ public class GameHandler {
 
 	public static void letsPlay (HashMap<Integer, MatchData> incomingMatchData, HashMap<Integer, PlayerData> incomingPlayerData) {
 
-		Game game = new Game();
-		game.setCasinoBalance(0);
-		ArrayList<Player> emptyPlayerList = new ArrayList<Player>();
-		Player singleEmptyPlayer = new Player();
-		singleEmptyPlayer.setPlayerIsLegitimate(true);
-		singleEmptyPlayer.setPlayerBalance(0);
-		singleEmptyPlayer.setWonGames(0);
-		singleEmptyPlayer.setPlacedBets(0);
-		BigDecimal bd = BigDecimal.ZERO;
-		singleEmptyPlayer.setPlayerWinRate(bd);
-		emptyPlayerList.add(singleEmptyPlayer);
-		game.setPlayers(emptyPlayerList);
-		game.setLegitimatePlayers(emptyPlayerList);
-		game.setIllegitimatePlayers(emptyPlayerList);
-
+		// tsükkel loeb andmed õiges järjekorras sisse: for(MatchData i : matchData.values())
 		HashMap<Integer, MatchData> matchData = new HashMap<Integer, MatchData>();
 		matchData = incomingMatchData;
-
-		// loeb kenasti õiges järjekorras!
-		//		System.out.println("Saved match data:");
-		//		for(MatchData i : matchData.values()) {
-		//
-		//			String theMatchId = i.getMatchId();
-		//			System.out.println(theMatchId);
-		//		}
 
 		HashMap<Integer, PlayerData> playerData = new HashMap<Integer, PlayerData>();
 		playerData = incomingPlayerData;
 
-		System.out.println("Saved player data:");
+		long casinoBalance = 0;
+		ArrayList<Player> sessionPlayers = new ArrayList<Player>();
+		Player singleEmptyPlayer = Player.initiateNewPlayer();
+		sessionPlayers.add(singleEmptyPlayer);
+
+		System.out.println("Start array length:" + sessionPlayers.size());
+
+		String previousUser = "";
+
 		for(PlayerData i : playerData.values()) {
 
+			String thePlayerIdFromData = i.getUserId();
+			String theOperationFromData = i.getOperation();
+			String theMatchIdFromData = i.getMatchId();
+			int theCoinNumberFromData = i.getCoinNumber();
+			String theBetFromData = i.getBet();
 
-			//			Player[] thePlayers = game.getPlayers();
-			//
-			//			if(thePlayers.length == 0) {
-			//				thePlayers.add(null);
+			Player storedPlayer = sessionPlayers.get(sessionPlayers.size()-1);
+			String storedPlayerId = storedPlayer.getPlayerID();
+			System.out.println("Fetched id: " + previousUser + " and action " + theOperationFromData + 
+					" " + theCoinNumberFromData + " coins");
 
-			String thePlayerId = i.getUserId();
-			String theOperation = i.getOperation();
-			String theMatchId = i.getMatchId();
-			int theCoinNumber = i.getCoinNumber();
-			String theBet = i.getBet();
+			Player currentUser = Player.initiateNewPlayer();
+			currentUser.setPlayerID(thePlayerIdFromData);
+			
+			// check if new player in player data log
+			// assume and handle only DEPOSIT
+			if(!previousUser.equals(thePlayerIdFromData)){
 
-			//				System.out.println("User: " + thePlayerId + " Operation: " + theOperation + 
-			//						" Match: " + theMatchId + " Coins: " + theCoinNumber + " Bet: " + theBet);
+				if(theOperationFromData.equals("DEPOSIT")) {
+					currentUser.setPlayerBalance(currentUser.getPlayerBalance()+theCoinNumberFromData);
+					System.out.println("New player " + thePlayerIdFromData + " and new balance " + currentUser.getPlayerBalance());				
+				}
+				sessionPlayers.add(currentUser);				
 
-			System.out.println("Comparing user " + thePlayerId + " and length of active player list: " + game.getPlayers().size());
+				//			System.out.println("User: " + thePlayerId + " Operation: " + theOperation + 
+				//					" Match: " + theMatchId + " Coins: " + theCoinNumber + " Bet: " + theBet + " counter:" +playerCounter);
+			
+			}
+			
+			// handle same player other actions after DEPOSIT
+			if(previousUser.equals(thePlayerIdFromData)) {
+				
+				if(theOperationFromData.equals("DEPOSIT")) {
+					int initialBalance = (int) currentUser.getPlayerBalance();
+					long newBalance = initialBalance + theCoinNumberFromData;
+					currentUser.setPlayerBalance(newBalance);
+					System.out.println("Same player, initial balance " + initialBalance + " new DEPOSIT " + theCoinNumberFromData + " new BALANCE" + currentUser.getPlayerBalance());
+				}
+				System.out.println("Same player, different action");
+			}
+			
+			
+			previousUser = thePlayerIdFromData;
+			
 		}
 
-		System.out.println("Well played!");
+
+		System.out.println("End array length:" + sessionPlayers.size());
+		
+		for(int i = 1; i < sessionPlayers.size(); i++) {
+			Player player = sessionPlayers.get(i);
+			long balance = player.getPlayerBalance();
+			System.out.println("Balance: " + balance);
+		}
+		
+		System.out.println("Gamehandler closed");
 
 	}
 
