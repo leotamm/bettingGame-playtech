@@ -2,6 +2,7 @@ package com.playtech.Internship_Assignment.App;
 
 public class PlayerData {
 	
+	// class for data from player input file
 	private String userId;
 	private String operation;
 	private String matchId;

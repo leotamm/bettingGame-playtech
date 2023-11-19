@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 
 public class Player {
 
+	//class for handling player data in game session
 	private String playerID;
 	private boolean playerIsLegitimate;
 	private int playerBalance;
+	private int wonGames;
+	private int placedBets;
 	private BigDecimal playerWinRate;
 
 	public String getPlayerID() {
@@ -23,6 +26,18 @@ public class Player {
 	}
 	public int getPlayerBalance() {
 		return playerBalance;
+	}	
+	public int getWonGames() {
+		return wonGames;
+	}
+	public void setWonGames(int wonGames) {
+		this.wonGames = wonGames;
+	}
+	public int getPlacedBets() {
+		return placedBets;
+	}
+	public void setPlacedBets(int placedBets) {
+		this.placedBets = placedBets;
 	}
 	public void setPlayerBalance(int playerBalance) {
 		this.playerBalance = playerBalance;

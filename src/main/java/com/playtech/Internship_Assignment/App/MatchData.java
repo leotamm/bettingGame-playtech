@@ -2,6 +2,7 @@ package com.playtech.Internship_Assignment.App;
 
 public class MatchData {
 
+	//class for data from match input file
 	private String matchId;
 	private float returnRateA;
 	private float returnRateB;

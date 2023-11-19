@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Game {
 
+	//class for handling game data in game session
 	private int casinoBalance;
 	private ArrayList<Player> players;
 	private ArrayList<Player> legitimatePlayers;

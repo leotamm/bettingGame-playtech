@@ -1,6 +1,7 @@
 package com.playtech.Internship_Assignment.App;
 
 import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class GameHandler {
@@ -11,6 +12,12 @@ public class GameHandler {
 		game.setCasinoBalance(0);
 		ArrayList<Player> emptyPlayerList = new ArrayList<Player>();
 		Player singleEmptyPlayer = new Player();
+		singleEmptyPlayer.setPlayerIsLegitimate(true);
+		singleEmptyPlayer.setPlayerBalance(0);
+		singleEmptyPlayer.setWonGames(0);
+		singleEmptyPlayer.setPlacedBets(0);
+		BigDecimal bd = BigDecimal.ZERO;
+		singleEmptyPlayer.setPlayerWinRate(bd);
 		emptyPlayerList.add(singleEmptyPlayer);
 		game.setPlayers(emptyPlayerList);
 		game.setLegitimatePlayers(emptyPlayerList);
@@ -20,12 +27,12 @@ public class GameHandler {
 		matchData = incomingMatchData;
 
 		// loeb kenasti õiges järjekorras!
-//		System.out.println("Saved match data:");
-//		for(MatchData i : matchData.values()) {
-//
-//			String theMatchId = i.getMatchId();
-//			System.out.println(theMatchId);
-//		}
+		//		System.out.println("Saved match data:");
+		//		for(MatchData i : matchData.values()) {
+		//
+		//			String theMatchId = i.getMatchId();
+		//			System.out.println(theMatchId);
+		//		}
 
 		HashMap<Integer, PlayerData> playerData = new HashMap<Integer, PlayerData>();
 		playerData = incomingPlayerData;
@@ -34,25 +41,25 @@ public class GameHandler {
 		for(PlayerData i : playerData.values()) {
 
 
-//			Player[] thePlayers = game.getPlayers();
-//
-//			if(thePlayers.length == 0) {
-//				thePlayers.add(null);
+			//			Player[] thePlayers = game.getPlayers();
+			//
+			//			if(thePlayers.length == 0) {
+			//				thePlayers.add(null);
 
-				String thePlayerId = i.getUserId();
-				String theOperation = i.getOperation();
-				String theMatchId = i.getMatchId();
-				int theCoinNumber = i.getCoinNumber();
-				String theBet = i.getBet();
-				
-//				System.out.println("User: " + thePlayerId + " Operation: " + theOperation + 
-//						" Match: " + theMatchId + " Coins: " + theCoinNumber + " Bet: " + theBet);
-				
-				System.out.println("Comparing user " + thePlayerId + " and length of active player list: " + game.getPlayers().size());
-			}
+			String thePlayerId = i.getUserId();
+			String theOperation = i.getOperation();
+			String theMatchId = i.getMatchId();
+			int theCoinNumber = i.getCoinNumber();
+			String theBet = i.getBet();
 
-			System.out.println("Well played!");
+			//				System.out.println("User: " + thePlayerId + " Operation: " + theOperation + 
+			//						" Match: " + theMatchId + " Coins: " + theCoinNumber + " Bet: " + theBet);
 
+			System.out.println("Comparing user " + thePlayerId + " and length of active player list: " + game.getPlayers().size());
 		}
 
+		System.out.println("Well played!");
+
 	}
+
+}
